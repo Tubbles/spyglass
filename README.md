@@ -124,6 +124,7 @@ On startup the following arguments are supported:
 | `-fh`, `--flip-horizontal`     | Mirror the image horizontally (see [below](#image-orientation)).                                                                   |                     |
 | `-fv`, `--flip-vertical`       | Mirror the image vertically (see [below](#image-orientation)).                                                                     |                     |
 | `-or`, `--orientation-exif`    | Set the image orientation using an EXIF header (see [below](#image-orientation)).                                                  |                     |
+| `--timestamp-overlay`          | Draw the local time into the top left corner of the image. Only supported for CSI cameras.                                         |                     |
 | `-c`, `--controls`             | Define camera controls to start spyglass with. Can be used multiple times. This argument expects the format \<control\>=\<value\>. |                     |
 | `-tf`, `--tuning-filter`       | Set a tuning filter file name.                                                                                                     |                     |
 | `-tfd`, `--tuning-filter-dir`  | Set the directory to look for tuning filters.                                                                                      |                     |

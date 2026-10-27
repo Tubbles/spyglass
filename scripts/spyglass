@@ -104,6 +104,11 @@ run_spyglass() {
         force_webrtc="--force-webrtc"
     fi
 
+    timestamp_overlay=""
+    if [[ "${TIMESTAMP_OVERLAY:-false}" == "true" ]]; then
+        timestamp_overlay="--timestamp-overlay"
+    fi
+
     "${PY_BIN}" "$(dirname "${BASE_SPY_PATH}")/run.py" \
     --camera-num "${CAMERA_NUM:-0}" \
     --bindaddress "${bind_adress}" \
@@ -119,6 +124,7 @@ run_spyglass() {
     --lensposition "${FOCAL_DIST:-0.0}" \
     --autofocusspeed "${AF_SPEED:-normal}" \
     --orientation-exif "${ORIENTATION_EXIF:-h}" \
+    ${timestamp_overlay} \
     --tuning-filter "${TUNING_FILTER:-}"\
     --tuning-filter-dir "${TUNING_FILTER_DIR:-}" \
     --mjpeg-linger-seconds "${MJPEG_LINGER_SECONDS:--1}" \

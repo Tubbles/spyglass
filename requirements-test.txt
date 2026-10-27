@@ -2,3 +2,5 @@ pylint
 pytest
 mock
 pytest-mock
+numpy
+pillow
