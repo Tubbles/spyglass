@@ -26,6 +26,7 @@ DEFAULT_CAMERA_NUM = 0
 DEFAULT_MJPEG_LINGER_SECONDS = -1
 DEFAULT_WEBRTC_LINGER_SECONDS = 5
 DEFAULT_QUALITY = None
+DEFAULT_TIMESTAMP_OVERLAY = False
 
 
 mock_libcamera = MagicMock()
@@ -87,6 +88,13 @@ def test_parse_tuning_filter_dir():
 
     args = cli.get_args(["-tfd", "dir"])
     assert args.tuning_filter_dir == "dir"
+
+
+def test_parse_timestamp_overlay():
+    from spyglass import cli
+
+    assert cli.get_args([]).timestamp_overlay is False
+    assert cli.get_args(["--timestamp-overlay"]).timestamp_overlay is True
 
 
 @patch("spyglass.camera.init_camera")
@@ -219,6 +227,7 @@ def test_run_server_with_configuration_from_arguments(mock_init_camera):
         DEFAULT_WEBRTC_LINGER_SECONDS,
         DEFAULT_QUALITY,
         DEFAULT_QUALITY,
+        DEFAULT_TIMESTAMP_OVERLAY,
     )
 
 
@@ -267,4 +276,14 @@ def test_run_server_with_orientation(mock_init_camera, input_value, expected_out
         DEFAULT_WEBRTC_LINGER_SECONDS,
         DEFAULT_QUALITY,
         DEFAULT_QUALITY,
+        DEFAULT_TIMESTAMP_OVERLAY,
     )
+
+
+@patch("spyglass.camera.init_camera")
+def test_run_server_with_timestamp_overlay(mock_init_camera):
+    from spyglass import cli
+
+    cli.main(args=["--timestamp-overlay"])
+    cam_instance = mock_init_camera.return_value
+    assert cam_instance.start_and_run_server.call_args.args[-1] is True

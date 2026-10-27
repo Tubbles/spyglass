@@ -3,6 +3,7 @@ from threading import Condition
 from typing import Any
 
 import libcamera
+from picamera2 import CompletedRequest, MappedArray
 from picamera2.encoders import Quality, _hw_encoder_available
 from picamera2.outputs import FileOutput
 
@@ -76,6 +77,28 @@ class CSI(camera.Camera):
             )
             return set()
 
+    def _install_timestamp_overlay(self) -> None:
+        """Draw the timestamp in the pre_callback, which runs before any
+        encoder gets the frame, so MJPEG, snapshots and WebRTC all show it."""
+        from spyglass.camera.timestamp_overlay import create_frame_drawer
+
+        stream_config = self.picam2.camera_config["main"]
+        draw_timestamp = create_frame_drawer(stream_config)
+        if draw_timestamp is None:
+            logger.warning(
+                "Timestamp overlay is not supported for main stream format %r "
+                "and will be ignored!",
+                stream_config["format"],
+            )
+            return
+
+        def draw_timestamp_into_request(request: CompletedRequest) -> None:
+            with MappedArray(request, "main") as mapped_array:
+                assert mapped_array.array is not None
+                draw_timestamp(mapped_array.array)
+
+        self.picam2.pre_callback = draw_timestamp_into_request
+
     def start_and_run_server(
         self,
         config: ServerConfig,
@@ -84,7 +107,11 @@ class CSI(camera.Camera):
         webrtc_linger_seconds: float = 5,
         mjpg_quality: Quality | None = None,
         h264_quality: Quality | None = None,
+        timestamp_overlay: bool = False,
     ) -> None:
+        if timestamp_overlay:
+            self._install_timestamp_overlay()
+
         if _hw_encoder_available and not use_sw_encoding:
             from picamera2.encoders import MJPEGEncoder
         else:

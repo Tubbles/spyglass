@@ -14,6 +14,7 @@ class USB(camera.Camera):
         webrtc_linger_seconds: float = 5,
         mjpg_quality: Quality | None = None,
         h264_quality: Quality | None = None,
+        timestamp_overlay: bool = False,
     ) -> None:
         def get_frame(inner_self: StreamingHandler) -> bytes:
             # TODO: Cuts framerate in 1/n with n streams open, add some kind of buffer
@@ -30,6 +31,10 @@ class USB(camera.Camera):
         if mjpg_quality is not None or h264_quality is not None:
             logger.warning(
                 "Setting quality is not supported for USB cameras and will be ignored!"
+            )
+        if timestamp_overlay:
+            logger.warning(
+                "Timestamp overlay is not supported for USB cameras and will be ignored!"
             )
 
         self.picam2.start()

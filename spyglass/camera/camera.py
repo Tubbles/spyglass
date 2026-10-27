@@ -123,6 +123,7 @@ class Camera(ABC):
         webrtc_linger_seconds: float = 5,
         mjpg_quality: Quality | None = None,
         h264_quality: Quality | None = None,
+        timestamp_overlay: bool = False,
     ) -> None:
         pass
 

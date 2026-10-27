@@ -110,6 +110,7 @@ def main(args: list[str] | None = None) -> None:
             parsed_args.webrtc_linger_seconds,
             parsed_args.mjpg_quality,
             parsed_args.h264_quality,
+            parsed_args.timestamp_overlay,
         )
     finally:
         cam.stop()
@@ -319,6 +320,12 @@ def get_parser() -> argparse.ArgumentParser:
         "  r90    - Rotate 90 CW\n"
         "  mhr90  - Mirror horizontal and rotate 90 CW\n"
         "  r270   - Rotate 270 CW",
+    )
+    parser.add_argument(
+        "--timestamp-overlay",
+        action="store_true",
+        help="Draw the local time into the top left corner of the image. "
+        "Only supported for CSI cameras",
     )
     parser.add_argument(
         "-c",
